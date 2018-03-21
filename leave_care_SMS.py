@@ -75,14 +75,17 @@ def _SMS_send(today):
 def _send(today):
     tel = []
     data_str = []
-    for key, value in _SMS_send(today).items():
+    result = _SMS_send(today).items()
+    # print(result)
+    for key, value in result:
         tel.append(key)
         data_str.append(quote(value))
-    param = {yc.MOBILE: ','.join(tel), yc.TEXT: (','.join(data_str))}
-    if conf.get(section='SMS', option='status') == 'online':
-        clnt.sms().multi_send(param)  # print('发送成功')
-    else:
-        print(param)
+    if len(tel) !=0:
+        param = {yc.MOBILE: ','.join(tel), yc.TEXT: (','.join(data_str))}
+        if conf.get(section='SMS', option='status') == 'online':
+            clnt.sms().multi_send(param)  # print('发送成功')
+        else:
+            print(param)
     pass
 
 
@@ -97,9 +100,9 @@ def test_job():
     # 2、获取信息后，返回至 【_SMS_send()】中，将信息填充至模板，存储在以手机号码开头的字典中（去重）
     # 3、读取字典，将文本做 URL 编码处理，并按照云片的发送格式进行处理，然后在【20:00】投递
     # 适用于 python 3.x版本
-    _send(datetime.date.today())
+    _send(datetime.date.today() + datetime.timedelta(days=0))
 
 
 scheduler = BlockingScheduler()
-scheduler.add_job(test_job, "cron", hour=20, minute=00, )
+scheduler.add_job(test_job, "cron", hour=conf.get('time', 'hour'), minute=conf.get('time', 'minute'))
 scheduler.start()
