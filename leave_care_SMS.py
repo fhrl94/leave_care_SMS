@@ -78,13 +78,13 @@ def _send(today):
     result = _SMS_send(today).items()
     # print(result)
     for key, value in result:
+        # key 是手机号码，没有则跳过
+        if key == None:
+            continue
         tel.append(key)
         data_str.append(quote(value))
-    if len(tel) !=0:
-        if len(tel) == 1:
-            param = {yc.MOBILE: tel, yc.TEXT: (data_str)}
-        else:
-            param = {yc.MOBILE: ','.join(tel), yc.TEXT: (','.join(data_str))}
+    if len(tel):
+        param = {yc.MOBILE: ','.join(tel), yc.TEXT: (','.join(data_str))}
         if conf.get(section='SMS', option='status') == 'online':
             clnt.sms().multi_send(param)  # print('发送成功')
         else:
@@ -103,7 +103,7 @@ def test_job():
     # 2、获取信息后，返回至 【_SMS_send()】中，将信息填充至模板，存储在以手机号码开头的字典中（去重）
     # 3、读取字典，将文本做 URL 编码处理，并按照云片的发送格式进行处理，然后在【20:00】投递
     # 适用于 python 3.x版本
-    _send(datetime.date.today() + datetime.timedelta(days=0))
+    _send(datetime.date.today() + datetime.timedelta(days=-3))
 
 
 scheduler = BlockingScheduler()
