@@ -103,7 +103,7 @@ def test_job():
     # 2、获取信息后，返回至 【_SMS_send()】中，将信息填充至模板，存储在以手机号码开头的字典中（去重）
     # 3、读取字典，将文本做 URL 编码处理，并按照云片的发送格式进行处理，然后在【20:00】投递
     # 适用于 python 3.x版本
-    _send(datetime.date.today() + datetime.timedelta(days=-3))
+    _send(datetime.date.today() + datetime.timedelta(days=0))
 
 
 scheduler = BlockingScheduler()
