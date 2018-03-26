@@ -81,7 +81,10 @@ def _send(today):
         tel.append(key)
         data_str.append(quote(value))
     if len(tel) !=0:
-        param = {yc.MOBILE: ','.join(tel), yc.TEXT: (','.join(data_str))}
+        if len(tel) == 1:
+            param = {yc.MOBILE: tel, yc.TEXT: (data_str)}
+        else:
+            param = {yc.MOBILE: ','.join(tel), yc.TEXT: (','.join(data_str))}
         if conf.get(section='SMS', option='status') == 'online':
             clnt.sms().multi_send(param)  # print('发送成功')
         else:
